@@ -421,29 +421,12 @@ extension LightboxController: HeaderViewDelegate {
 
   func headerView(_ headerView: HeaderView, didPressDeleteButton deleteButton: UIButton) {
     deleteButton.isEnabled = false
+    
+    let vc = UIActivityViewController(activityItems: [pageViews[currentPage].imageView.image], applicationActivities: [])
 
-    guard numberOfPages != 1 else {
-      pageViews.removeAll()
-      self.headerView(headerView, didPressCloseButton: headerView.closeButton)
-      return
-    }
+    present(vc, animated: true)
 
-    let prevIndex = currentPage
-
-    if currentPage == numberOfPages - 1 {
-      previous()
-    } else {
-      next()
-      currentPage -= 1
-    }
-
-    self.pageViews.remove(at: prevIndex).removeFromSuperview()
-
-    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 0.5) {
-      self.configureLayout(self.view.bounds.size)
-      self.currentPage = Int(self.scrollView.contentOffset.x / self.view.bounds.width)
-      deleteButton.isEnabled = true
-    }
+    deleteButton.isEnabled = true
   }
 
   func headerView(_ headerView: HeaderView, didPressCloseButton closeButton: UIButton) {
